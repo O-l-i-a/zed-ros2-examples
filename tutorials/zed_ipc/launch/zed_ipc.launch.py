@@ -84,15 +84,15 @@ def launch_setup(context, *args, **kwargs):
 
     # Create the point cloud node
     pc_node = ComposableNode(
-        package='zed_ipc',
-        plugin='stereolabs::PointCloudComponent',
-        name='ipc_user_node',
+        package='zed_recorder_cpp',
+        plugin='zed_recorder_cpp::DepthRecorder',
+        name='depth_recorder',
         namespace='zed_multi',
         parameters=[{
-            'cam_count': cam_count
+            'topic': f'/zed_multi/{name_array[0]}/depth/depth_registered',
+
         }],
-        remappings=remappings,
-        extra_arguments=[{'use_intra_process_comms': True}]
+        extra_arguments=[{'use_intra_process_comms': True}, {'--log-level': 'warn'}]
     )
 
     # Load the point cloud node in the container
