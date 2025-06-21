@@ -83,7 +83,7 @@ def launch_setup(context, *args, **kwargs):
         remappings.append(remapping)
 
     # Create the point cloud node
-    pc_node = ComposableNode(
+    depth_node = ComposableNode(
         package='zed_recorder_cpp',
         plugin='zed_recorder_cpp::DepthRecorder',
         name='depth_recorder',
@@ -94,10 +94,18 @@ def launch_setup(context, *args, **kwargs):
         }],
         extra_arguments=[{'use_intra_process_comms': True}, {'--log-level': 'warn'}]
     )
+    rgb_node = ComposableNode(
+    package='zed_recorder_cpp',
+    plugin='zed_recorder_cpp::RGBRecorder',
+    name='rgb_recorder',
+    namespace='zed_multi',
+    parameters=[{'topic': '/zed_multi/myzed2i/rgb/image_rect_color'}],
+    extra_arguments=[{'use_intra_process_comms': True}]
+)
 
     # Load the point cloud node in the container
     load_pc_node = LoadComposableNodes(
-        composable_node_descriptions=[pc_node],
+        composable_node_descriptions=[depth_node, rgb_node],
         target_container='/zed_multi/zed_multi_container'
     )
     actions.append(load_pc_node)
